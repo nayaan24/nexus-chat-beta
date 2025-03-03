@@ -1,6 +1,6 @@
 const sender = new URLSearchParams(window.location.search).get('sender');
 const receiver = new URLSearchParams(window.location.search).get('receiver');
-const websocket = new WebSocket(`ws://${window.location.host}/ws/${sender}`);
+const websocket = new WebSocket(`wss://${window.location.host}/ws/${sender}`);
 
 const chatArea = document.getElementById("chatArea");
 const messageInput = document.getElementById("messageInput");
