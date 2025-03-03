@@ -1,0 +1,175 @@
+/* Reset default margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Body styling */
+body {
+    background-color: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+}
+
+/* Decorative corner elements */
+.corner-design {
+    width: 100px; 
+    height: 200px; /* Leaf Shape */
+    position: absolute;
+    background: linear-gradient(45deg, #ffe100, #00ffff); /* Yellow + Blue */
+    border-radius: 0 100% 0 100%; /* Pure Leaf Shape Curve */
+    z-index: 999;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
+    transform: rotate(-45deg); /* Tilted Leaf Look */
+    animation: leafSwing 3s infinite alternate;
+    opacity: 0.8; /* Transparent Leaf Look */
+}
+
+@keyframes leafSwing {
+    from {
+        transform: rotate(-45deg) scale(1);
+    }
+    to {
+        transform: rotate(-30deg) scale(1.05);
+    }
+}
+
+.top-left {
+    top: 20px;
+    left: 20px;
+    transform-origin: top left;
+}
+
+.bottom-right {
+    bottom: 20px;
+    right: 20px;
+    transform-origin: bottom right;
+}
+
+/* Signup form container */
+.signup-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    width: 350px;
+}
+
+/* Logo styling */
+.logo {
+    width: 100px;
+    height: 100px;
+    
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.logo h1 {
+    color: black;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+
+
+.chat-text {
+    font-size: 16px;
+    font-weight: bold;
+    color: green;
+}
+
+/* Welcome message */
+.welcome {
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    font-weight:lighter;
+    margin: 20px 0;
+    color: black;
+}
+
+/* Input fields */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    color: black;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 3px solid black;
+    outline: none;
+    position: relative;
+    background-color: white;
+}
+
+.input-group input:focus {
+    border-color: green;
+}
+
+/* Chat button */
+.chat-button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background-color: green;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.3);
+    transition: background 0.3s;
+}
+
+.chat-button:hover {
+    background-color: darkgreen;
+}
+.logo img {
+    width: 200px; /* Set Fixed Size */
+    height: 200px; 
+    display: block; 
+    margin: 0 auto; /* Center the Logo */
+    border-radius: 50%; 
+    
+}
+.leaf-top-left::before,
+.leaf-top-right::before {
+    content: '';
+    position: absolute;
+    width: 100px; /* Size of the leaf */
+    height: 200px; /* Size of the leaf */
+    background: linear-gradient(135deg, #32CD32, #2E8B57); /* Leaf green gradient */
+    border-radius: 50% 0% 50% 50%; /* Curvy leaf shape */
+    transform: rotate(-45deg); /* Tilt it like a leaf */
+    opacity: 0.8;
+    z-index: -1;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.6);
+}
+
+.leaf-top-left::before {
+    top: -50px;
+    left: -50px;
+}
+
+.leaf-top-right::before {
+    top: -50px;
+    right: -50px;
+    transform: rotate(45deg); /* Mirrored leaf */
+}

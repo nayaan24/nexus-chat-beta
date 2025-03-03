@@ -1,0 +1,121 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: black;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+}
+
+.chat-container {
+    width: 90%;
+    max-width: 450px;
+    background: rgba(0, 255, 0, 0.1);
+    border: 2px solid silver;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+}
+
+.chat-header {
+    background: green;
+    padding: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    text-shadow: 0 0 8px #00ff00;
+}
+
+#exitButton {
+    background: silver;
+    color: gold;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#exitButton:hover {
+    background: red;
+    color: white;
+    transform: scale(1.1);
+}
+
+.chat-area {
+    height: 300px;
+    padding: 10px;
+    overflow-y: scroll;
+    background: rgba(0, 255, 0, 0.05);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    scrollbar-width: thin;
+}
+
+.welcome-msg {
+    text-align: center;
+    font-weight: bold;
+    color: gold;
+    margin-bottom: 20px;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background: black;
+    border-top: 2px solid silver;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    background: rgba(0, 255, 0, 0.1);
+    color: white;
+}
+
+#sendButton {
+    background: green;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#sendButton:hover {
+    background: gold;
+    color: black;
+    transform: scale(1.1);
+}
+.typing {
+    font-style: italic;
+    color: rgb(214, 214, 214);
+    margin: 10px 0;
+    text-align: center;
+    animation: fade 1s infinite alternate;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0.5;
+    }
+    to {
+        opacity: 1;
+    }
+}
+

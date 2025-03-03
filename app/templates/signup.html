@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Chat - Signup</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<div class="signup-container">
+    <!-- Logo slot -->
+    <div class="logo">
+        <img src="/static/logo.png" alt="Nexus Logo" class="logo-img">
+    </div>
+    <div class="welcome">WELCOME!</div>
+    <div class="leaf-top-left"></div>
+    <div class="leaf-top-right"></div>
+
+    <div class="input-group">
+        <label for="sender_ip">Sender's IP</label>
+        <input type="text" id="sender_ip" placeholder="Enter Sender IP" oninput="validateIP('sender_ip')">
+        <div class="error-message" id="sender_ip_error"></div>
+    </div>
+    <div class="input-group">
+        <label for="receiver_ip">Receiver's IP</label>
+        <input type="text" id="receiver_ip" placeholder="Enter Receiver IP" oninput="validateIP('receiver_ip')">
+        <div class="error-message" id="receiver_ip_error"></div>
+    </div>
+    <button class="chat-button" id="chat_button" onclick="startChat()" disabled>CHAT</button>
+</div>
+
+<script>
+    function validateIP(fieldId) {
+        const ip = document.getElementById(fieldId).value.trim();
+        const errorElement = document.getElementById(fieldId + '_error');
+        const chatButton = document.getElementById('chat_button');
+        const ipParts = ip.split('.');
+
+        errorElement.textContent = '';
+        errorElement.style.color = 'red';
+
+        if (/[^0-9.]/.test(ip)) {
+            errorElement.textContent = 'Invalid characters';
+        } else if (ipParts.length > 4) {
+            errorElement.textContent = 'IP part exceeded';
+        } else {
+            for (let part of ipParts) {
+                if (part !== '' && (parseInt(part) < 0 || parseInt(part) > 255)) {
+                    errorElement.textContent = 'Invalid IP range';
+                    break;
+                }
+            }
+        }
+
+        // Check all fields for errors before enabling the button
+        const senderError = document.getElementById('sender_ip_error').textContent;
+        const receiverError = document.getElementById('receiver_ip_error').textContent;
+        const senderValue = document.getElementById('sender_ip').value.trim();
+        const receiverValue = document.getElementById('receiver_ip').value.trim();
+
+        if (senderError === '' && receiverError === '' && senderValue !== '' && receiverValue !== '') {
+            chatButton.disabled = false;
+        } else {
+            chatButton.disabled = true;
+        }
+    }
+
+    function startChat() {
+        const senderIP = document.getElementById('sender_ip').value.trim();
+        const receiverIP = document.getElementById('receiver_ip').value.trim();
+
+        window.location.href = `/chat.html?sender=${encodeURIComponent(senderIP)}&receiver=${encodeURIComponent(receiverIP)}`;
+    }
+</script>
+
+<div class="corner-design top-left"></div>
+<div class="corner-design bottom-right"></div>
+
+</body>
+</html>
