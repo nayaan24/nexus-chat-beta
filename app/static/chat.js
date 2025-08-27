@@ -1,74 +1,94 @@
-const sender = new URLSearchParams(window.location.search).get('sender');
-const receiver = new URLSearchParams(window.location.search).get('receiver');
-const websocket = new WebSocket(`wss://${window.location.host}/ws/${sender}`);
+// This part extracts the sender and receiver from the URL
+let senderName = new URLSearchParams(window.location.search).get('sender');
+let recvName = new URLSearchParams(window.location.search).get('receiver');
 
-const chatArea = document.getElementById("chatArea");
-const messageInput = document.getElementById("messageInput");
-const sendButton = document.getElementById("sendButton");
-const exitButton = document.getElementById("exitButton");
-const chatPartner = document.getElementById("chatPartner");
+// this is the websocket setup
+let ws = new WebSocket(`wss://${window.location.host}/ws/${senderName}`);
 
-// Typing Indicator Element
-const typingIndicator = document.createElement("div");
-typingIndicator.className = "typing";
-typingIndicator.textContent = "Your chat partner is typing...";
-typingIndicator.style.display = "none";
-chatArea.appendChild(typingIndicator);
+// DOM,that is:referencing/connecting html/css to javascript
+let chatBox = document.getElementById("chatArea");
+let msgInput = document.getElementById("messageInput");
+let sendBtn = document.getElementById("sendButton");
+let exitBtn = document.getElementById("exitButton");
+let partnerLabel = document.getElementById("chatPartner");
 
-let typingTimeout;
+// typing indicator system...
+let typingDiv = document.createElement("div");
+typingDiv.className = "typing";
+typingDiv.textContent = "Your chat partner is typing...";
+typingDiv.style.display = "none";
+chatBox.appendChild(typingDiv);
 
-chatPartner.innerHTML = `Connected to ${receiver} 💚`;
+let typingTimer; // debug: to hide typing status
 
-websocket.onmessage = function(event) {
-    if (event.data === "typing...") {
-        typingIndicator.style.display = "block";
-        clearTimeout(typingTimeout);
-        typingTimeout = setTimeout(() => {
-            typingIndicator.style.display = "none";
+partnerLabel.innerHTML = `Connected to ${recvName} 💚`;
+
+// incoming messages
+ws.onmessage = function(evt) {
+    console.log("debug: got msg ->", evt.data);
+
+    if (evt.data === "typing...") {
+        typingDiv.style.display = "block";
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            typingDiv.style.display = "none";
         }, 1000);
-    } 
-    else if (event.data !== "Waiting for a chat partner...") {
-        const message = document.createElement("div");
-        message.textContent = `${receiver}: ${event.data}`;
-        message.className = "received";
-        chatArea.appendChild(message);
-        chatArea.scrollTop = chatArea.scrollHeight;
+    } else if (evt.data !== "Waiting for a chat partner...") {
+        let msgDiv = document.createElement("div");
+        msgDiv.textContent = `${recvName}: ${evt.data}`;
+        msgDiv.className = "received";
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
 };
 
-sendButton.onclick = function() {
-    const message = messageInput.value.trim();
-    if (message !== "") {
-        websocket.send(message);
-        const messageDiv = document.createElement("div");
-        messageDiv.textContent = `You: ${message}`;
-        messageDiv.className = "sent";
-        chatArea.appendChild(messageDiv);
-        chatArea.scrollTop = chatArea.scrollHeight;
-        messageInput.value = ""; 
+// sending messages
+sendBtn.onclick = function() {
+    let text = msgInput.value.trim();
+
+    if (text.length > 0) {
+        ws.send(text);
+
+        let sentDiv = document.createElement("div");
+        sentDiv.textContent = `You: ${text}`;
+        sentDiv.className = "sent";
+        chatBox.appendChild(sentDiv);
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+        msgInput.value = ""; // clear box
+    } else {
+        console.log("debug: empty message not sent");
     }
 };
 
-exitButton.onclick = function() {
-    alert(`Disconnected from ${receiver}`);
-    websocket.close();
+// exit button functioning
+exitBtn.onclick = function() {
+    alert(`Disconnected from ${recvName}`);
+    try {
+        ws.close();
+    } catch (err) {
+        console.log("debug: ws already closed?", err);
+    }
     window.location.href = "/";
 };
 
-messageInput.addEventListener("keypress", function(e) {
+// pressing Enter sends mesg
+msgInput.addEventListener("keypress", function(e) {
     if (e.key === "Enter") {
-        sendButton.click();
+        sendBtn.click();
     }
 });
 
-messageInput.addEventListener("input", function() {
-    websocket.send("typing...");
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-        typingIndicator.style.display = "none";
+// typing event
+msgInput.addEventListener("input", function() {
+    ws.send("typing...");
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(() => {
+        typingDiv.style.display = "none";
     }, 1000);
 });
 
-window.onbeforeunload = function () {
-    websocket.close();
+// this part closes the websocket connection if the page is closed..
+window.onbeforeunload = function() {
+    ws.close();
 };
