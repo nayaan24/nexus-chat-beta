@@ -3,88 +3,97 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
-from typing import Dict, Optional
 import os
+from typing import Dict, Optional
 
-app = FastAPI()
+app = FastAPI() # this is initilization.
 
-# Serve static files (CSS, images, etc.)
-static_dir = os.path.join(os.path.dirname(__file__), "static")
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
+# this part imports and loads the static files(css, js, images etc.)
+static_path = os.path.join(os.path.dirname(__file__), "static")
+app.mount("/static", StaticFiles(directory=static_path), name="static")
 
-# Load HTML templates
+# jinja templates (html pages basically)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
-# Store connected users
-connected_users: Dict[str, WebSocket] = {}
-pairings: Dict[str, str] = {}
+# track online ppl.
+active_users: Dict[str, WebSocket] = {}
+paired_with: Dict[str, str] = {}  # who is talking to whom
+
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    """Serve the signup page as the default homepage."""
+    # this is setting the signup page as the default one(this will be loaded when you open the app).
     return templates.TemplateResponse("signup.html", {"request": request})
+
 
 @app.get("/chat.html", response_class=HTMLResponse)
 async def chat_page(request: Request, sender: str, receiver: str):
+    # this is the start function!this part checks which one is smaller and which one is bigger,smaller IP is set as sender and reciver ip is set as reciever.
     sender, receiver = compare_ips(sender, receiver)
-    return templates.TemplateResponse("chat.html", {"request": request, "sender": sender, "receiver": receiver})
+    return templates.TemplateResponse(
+        "chat.html", {"request": request, "sender": sender, "receiver": receiver}
+    )
+
 
 @app.websocket("/ws/{user_ip}")
-async def websocket_endpoint(websocket: WebSocket, user_ip: str):
-    """Handles WebSocket connections for real-time chat."""
-    await websocket.accept()
-    connected_users[user_ip] = websocket
+async def chat_ws(ws: WebSocket, user_ip: str):
+    # handles websocket connections for chatting..
+    await ws.accept()
+    active_users[user_ip] = ws
 
-    recipient_ip = find_recipient(user_ip)
-    
-    if recipient_ip:
-        await websocket.send_text(f"✅ New Chat Session Started: {user_ip} ↔️ {recipient_ip}")
-        await connected_users[recipient_ip].send_text(f"✅ New Chat Session Started: {user_ip} ↔️ {recipient_ip}")
+    partner_ip = grab_partner(user_ip)
+
+    # if both users are paired, this message is shown
+    if partner_ip:
+        await ws.send_text(f"✅ Chat started: {user_ip} ↔️ {partner_ip}")
+        await active_users[partner_ip].send_text(f"✅ Chat started: {user_ip} ↔️ {partner_ip}")
 
     try:
         while True:
-            data = await websocket.receive_text()
+            data = await ws.receive_text()
 
-            recipient_ip = find_recipient(user_ip)
+            partner_ip = grab_partner(user_ip)
 
+            # a small typing indicator (took me 4 and a half days:)
             if data == "typing...":
-                if recipient_ip and recipient_ip in connected_users:
-                    await connected_users[recipient_ip].send_text("typing...")
+                if partner_ip and partner_ip in active_users:
+                    await active_users[partner_ip].send_text("typing...")
                 continue
 
-            if recipient_ip and recipient_ip in connected_users:
-                await connected_users[recipient_ip].send_text(data)
+            # forward msg if partner is there
+            if partner_ip and partner_ip in active_users:
+                await active_users[partner_ip].send_text(data)
             else:
-                await websocket.send_text("Waiting for a chat partner...")
+                await ws.send_text("Waiting for someone to join...")
 
     except WebSocketDisconnect:
-        if recipient_ip and recipient_ip in connected_users:
-            await connected_users[recipient_ip].send_text(f"❌ Chat Ended: {user_ip} ↔️ {recipient_ip}")
+        if partner_ip and partner_ip in active_users:
+            await active_users[partner_ip].send_text(f"❌ Chat ended: {user_ip} ↔️ {partner_ip}")
+        await clean_disconnect(user_ip)
 
-        await handle_disconnection(user_ip)
 
-
-def find_recipient(user_ip: str) -> Optional[str]:
-    """Finds an available recipient for the given user."""
-    for ip, ws in connected_users.items():
-        if ip != user_ip and ws is not None and ip not in pairings:
+def grab_partner(user_ip: str) -> Optional[str]:
+    # a small partner finder,like it finds available and connected users,it is buggy so it is not working as i tested.
+    for ip, ws in active_users.items():
+        if ip != user_ip and ws is not None and ip not in paired_with:
             return ip
     return None
 
-async def handle_disconnection(user_ip: str):
-    """Handles user disconnection and notifies the remaining user."""
-    connected_users.pop(user_ip, None)
-    if user_ip in pairings:
-        recipient_ip = pairings.pop(user_ip)
-        if recipient_ip in pairings:
-            pairings.pop(recipient_ip)
-        if recipient_ip in connected_users:
-            await connected_users[recipient_ip].send_text(f"User {user_ip} has disconnected. Chat ended.")
+
+async def clean_disconnect(user_ip: str):
+    # this function handles disconnecting
+    active_users.pop(user_ip, None)
+    if user_ip in paired_with:
+        partner_ip = paired_with.pop(user_ip)
+        if partner_ip in paired_with:
+            paired_with.pop(partner_ip)
+        if partner_ip in active_users:
+            await active_users[partner_ip].send_text(f"user {user_ip} left. chat closed.")
 
 
 def compare_ips(sender: str, receiver: str) -> tuple:
-    """Compares two IPs and assigns the smaller one as sender and the bigger one as receiver."""
+    # a small system that prevents IP collision by setting the numerically smaller IP as sender and the other one as reciever.
     if sender > receiver:
         return receiver, sender
     return sender, receiver
