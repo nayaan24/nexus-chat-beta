@@ -15,7 +15,7 @@
 </head>
 <body>
 <div class="signup-container">
-    <!-- Logo slot -->
+    <!-- a division for the logo image -->
     <div class="logo">
         <img src="/static/logo.png" alt="Nexus Logo" class="logo-img">
     </div>
@@ -45,7 +45,7 @@
 
         errorElement.textContent = '';
         errorElement.style.color = 'red';
-
+                 //this part below is used for checking inputs..
         if (/[^0-9.]/.test(ip)) {
             errorElement.textContent = 'Invalid characters';
         } else if (ipParts.length > 4) {
@@ -59,7 +59,7 @@
             }
         }
 
-        // Check all fields for errors before enabling the button
+        // this part checks for errors before re-enabling the chat button..
         const senderError = document.getElementById('sender_ip_error').textContent;
         const receiverError = document.getElementById('receiver_ip_error').textContent;
         const senderValue = document.getElementById('sender_ip').value.trim();
@@ -71,7 +71,7 @@
             chatButton.disabled = true;
         }
     }
-
+        //this function actually starts the chat..
     function startChat() {
         const senderIP = document.getElementById('sender_ip').value.trim();
         const receiverIP = document.getElementById('receiver_ip').value.trim();
