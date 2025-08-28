@@ -1,4 +1,4 @@
-/* Reset default margin and padding */
+/* Resets the default margin and padding */
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +6,7 @@
     font-family: Arial, sans-serif;
 }
 
-/* Body styling */
+/* styling of body*/
 body {
     background-color: #222;
     display: flex;
@@ -16,16 +16,16 @@ body {
     position: relative;
 }
 
-/* Decorative corner elements */
+/* leaf animation design is done through the below code */
 .corner-design {
     width: 100px; 
-    height: 200px; /* Leaf Shape */
+    height: 200px; /* this part is actually drawing the leaf*/
     position: absolute;
-    background: linear-gradient(45deg, #ffe100, #00ffff); /* Yellow + Blue */
-    border-radius: 0 100% 0 100%; /* Pure Leaf Shape Curve */
+    background: linear-gradient(45deg, #ffe100, #00ffff); /* Yellow and blue gradient design */
+    border-radius: 0 100% 0 100%; /* Leaf's Shape and  Curve */
     z-index: 999;
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
-    transform: rotate(-45deg); /* Tilted Leaf Look */
+    transform: rotate(-45deg); /* Tilts the leaf a bit.. */
     animation: leafSwing 3s infinite alternate;
     opacity: 0.8; /* Transparent Leaf Look */
 }
@@ -145,10 +145,10 @@ body {
     
 }
 .logo img {
-    width: 200px; /* Set Fixed Size */
+    width: 200px; /* Fixed Size */
     height: 200px; 
     display: block; 
-    margin: 0 auto; /* Center the Logo */
+    margin: 0 auto; /* Centering the logo.. */
     border-radius: 50%; 
     
 }
@@ -157,7 +157,7 @@ body {
     content: '';
     position: absolute;
     width: 100px; /* Size of the leaf */
-    height: 200px; /* Size of the leaf */
+    height: 200px; 
     background: linear-gradient(135deg, #32CD32, #2E8B57); /* Leaf green gradient */
     border-radius: 50% 0% 50% 50%; /* Curvy leaf shape */
     transform: rotate(-45deg); /* Tilt it like a leaf */
