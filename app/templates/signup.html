@@ -37,47 +37,49 @@
 </div>
 
 <script>
-    function validateIP(fieldId) {
-        const ip = document.getElementById(fieldId).value.trim();
-        const errorElement = document.getElementById(fieldId + '_error');
-        const chatButton = document.getElementById('chat_button');
-        const ipParts = ip.split('.');
+   <script>
+function validateIP(fieldId) {
+    const ipValue = document.getElementById(fieldId).value.trim();
+    const errorBox = document.getElementById(fieldId + '_error');
+    const chatButton = document.getElementById('chat_button');
+    const ipSegments = ipValue.split('.');
 
-        errorElement.textContent = '';
-        errorElement.style.color = 'red';
-                 //this part below is used for checking inputs..
-        if (/[^0-9.]/.test(ip)) {
-            errorElement.textContent = 'Invalid characters';
-        } else if (ipParts.length > 4) {
-            errorElement.textContent = 'IP part exceeded';
-        } else {
-            for (let part of ipParts) {
-                if (part !== '' && (parseInt(part) < 0 || parseInt(part) > 255)) {
-                    errorElement.textContent = 'Invalid IP range';
-                    break;
-                }
+    // clear old error
+    errorBox.textContent = "";
+    errorBox.style.color = "red";
+
+    // basic format checks
+    if (/[^0-9.]/.test(ipValue)) {
+        errorBox.textContent = "Invalid characters";
+    } else if (ipSegments.length > 4) {
+        errorBox.textContent = "Too many parts";
+    } else {
+        for (let seg of ipSegments) {
+            if (seg !== "" && (parseInt(seg) < 0 || parseInt(seg) > 255)) {
+                errorBox.textContent = "Out of range (0-255)";
+                break;
             }
         }
-
-        // this part checks for errors before re-enabling the chat button..
-        const senderError = document.getElementById('sender_ip_error').textContent;
-        const receiverError = document.getElementById('receiver_ip_error').textContent;
-        const senderValue = document.getElementById('sender_ip').value.trim();
-        const receiverValue = document.getElementById('receiver_ip').value.trim();
-
-        if (senderError === '' && receiverError === '' && senderValue !== '' && receiverValue !== '') {
-            chatButton.disabled = false;
-        } else {
-            chatButton.disabled = true;
-        }
     }
-        //this function actually starts the chat..
-    function startChat() {
-        const senderIP = document.getElementById('sender_ip').value.trim();
-        const receiverIP = document.getElementById('receiver_ip').value.trim();
 
-        window.location.href = `/chat.html?sender=${encodeURIComponent(senderIP)}&receiver=${encodeURIComponent(receiverIP)}`;
-    }
+    // enable chat only if both IPs look fine
+    const senderError = document.getElementById('sender_ip_error').textContent;
+    const receiverError = document.getElementById('receiver_ip_error').textContent;
+    const senderInput = document.getElementById('sender_ip').value.trim();
+    const receiverInput = document.getElementById('receiver_ip').value.trim();
+
+    chatButton.disabled = !(senderError === "" && receiverError === "" && senderInput && receiverInput);
+}
+
+function startChat() {
+    const senderIP = document.getElementById('sender_ip').value.trim();
+    const receiverIP = document.getElementById('receiver_ip').value.trim();
+
+    console.log("Starting chat with:", senderIP, "->", receiverIP); //test_
+    window.location.href = `/chat.html?sender=${encodeURIComponent(senderIP)}&receiver=${encodeURIComponent(receiverIP)}`;
+}
+</script>
+
 </script>
 
 <div class="corner-design top-left"></div>
