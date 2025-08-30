@@ -37,7 +37,7 @@
 </div>
 
 <script>
-   <script>
+   
 function validateIP(fieldId) {
     const ipValue = document.getElementById(fieldId).value.trim();
     const errorBox = document.getElementById(fieldId + '_error');
@@ -78,8 +78,6 @@ function startChat() {
     console.log("Starting chat with:", senderIP, "->", receiverIP); //test_
     window.location.href = `/chat.html?sender=${encodeURIComponent(senderIP)}&receiver=${encodeURIComponent(receiverIP)}`;
 }
-</script>
-
 </script>
 
 <div class="corner-design top-left"></div>
