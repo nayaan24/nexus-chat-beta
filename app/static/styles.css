@@ -16,7 +16,7 @@ body {
     position: relative;
 }
 
-/* leaf animation design is done through the below code */
+/* leaf animation and design is done through the below code.that is,the leaves on either side of the screen */
 .corner-design {
     width: 100px; 
     height: 200px; /* this part is actually drawing the leaf*/
@@ -152,6 +152,7 @@ body {
     border-radius: 50%; 
     
 }
+/*the leaf design at the back of the form is done with this code down there:*/
 .leaf-top-left::before,
 .leaf-top-right::before {
     content: '';
