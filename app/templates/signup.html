@@ -51,7 +51,10 @@ function validateIP(fieldId) {
     // basic format checks
     if (/[^0-9.]/.test(ipValue)) {
         errorBox.textContent = "Invalid characters";
-    } else if (ipSegments.length > 4) {
+    } else if (ipSegments.length < 4){
+        errorBox.textContent = "incomplete IP"
+    }
+    else if (ipSegments.length > 4) {
         errorBox.textContent = "Too many parts";
     } else {
         for (let seg of ipSegments) {
