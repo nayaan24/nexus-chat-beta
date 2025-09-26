@@ -43,19 +43,23 @@ function validateIP(fieldId) {
     const errorBox = document.getElementById(fieldId + '_error');
     const chatButton = document.getElementById('chat_button');
     const ipSegments = ipValue.split('.');
+    const senderInput = document.getElementById('sender_ip').value.trim();
+    const receiverInput = document.getElementById('receiver_ip').value.trim();
+    const senderIP = document.getElementById('sender_ip').value.trim();
+    const receiverIP = document.getElementById('receiver_ip').value.trim();
+    
 
     // clear old error
     errorBox.textContent = "";
     errorBox.style.color = "red";
 
     // basic format checks
-    if (/[^0-9.]/.test(ipValue)) {
+   if (/[^0-9.]/.test(ipValue)) {
         errorBox.textContent = "Invalid characters";
-    } else if (ipSegments.length < 4){
-        errorBox.textContent = "incomplete IP"
-    }
-    else if (ipSegments.length > 4) {
+    } else if (ipSegments.length > 4) {
         errorBox.textContent = "Too many parts";
+    }     if(senderIP==receiverIP){
+        errorBox.textContent = "same ip in both fields"
     } else {
         for (let seg of ipSegments) {
             if (seg !== "" && (parseInt(seg) < 0 || parseInt(seg) > 255)) {
