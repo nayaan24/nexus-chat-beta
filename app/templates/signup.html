@@ -37,7 +37,9 @@
 </div>
 
 <script>
-   function validateIP(fieldId) {
+    
+   
+function validateIP(fieldId) {
     const ipValue = document.getElementById(fieldId).value.trim();
     const errorBox = document.getElementById(fieldId + '_error');
     const chatButton = document.getElementById('chat_button');
@@ -53,20 +55,22 @@
 
     // basic format checks
     if (/[^0-9.]/.test(ipValue)) {
-        errorBox.textContent = "Invalid characters";
-    } else if (ipSegments.length > 4) {
-        errorBox.textContent = "Too many parts";
-    }     if(senderIP==receiverIP){
-        errorBox.textContent = "same ip in both fields"
-    } else {
-        for (let seg of ipSegments) {
-            if (seg !== "" && (parseInt(seg) < 0 || parseInt(seg) > 255)) {
-                errorBox.textContent = "Out of range (0-255)";
-                break;
-            }
+    errorBox.textContent = "Invalid characters";
+} else if (ipSegments.length > 4) {
+    errorBox.textContent = "Too many parts";
+} else if (ipSegments.length < 4) {
+    errorBox.textContent = "Incomplete IP";
+}
+if (senderIP == receiverIP) {
+    errorBox.textContent = "same ip in both fields";
+} else {
+    for (let seg of ipSegments) {
+        if (seg !== "" && (parseInt(seg) < 0 || parseInt(seg) > 255)) {
+            errorBox.textContent = "Out of range (0-255)";
+            break;
         }
     }
-   
+}
 
     // enable chat only if both IPs look fine
     const senderError = document.getElementById('sender_ip_error').textContent;
